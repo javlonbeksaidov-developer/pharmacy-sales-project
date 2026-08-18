@@ -7,6 +7,8 @@ from app.schemas import DrugsBase
 
 drug_router = APIRouter()
 
+""" POST """
+
 
 @drug_router.post("/drugs/create/")
 def create_drug(drug: DrugsBase, db: Session = Depends(get_db)):  # noqa: B008
@@ -24,10 +26,22 @@ def create_drug(drug: DrugsBase, db: Session = Depends(get_db)):  # noqa: B008
     return new_drug
 
 
+""" GET """
+
+
 @drug_router.get("/drugs/")
 def get_all_drugs(db: Session = Depends(get_db)):  # noqa: B008
     drug = db.query(Drugs).all()
     return drug
+
+
+@drug_router.get("/drugs/{drug_id}")
+def get_drug_by_id(drug_id: int, db: Session = Depends(get_db)):  # noqa: B008
+    drug = db.query(Drugs).filter(Drugs.id == drug_id).first()
+    return drug
+
+
+""" PUT """
 
 
 @drug_router.put("/drugs/update/{drug_id}")
@@ -47,6 +61,9 @@ def update_drug(drug_id: int, drug: DrugsBase, db: Session = Depends(get_db)):  
     db.commit()
     db.refresh(db_drug)
     return db_drug
+
+
+""" DELETE """
 
 
 @drug_router.delete("/drugs/delete/{drug_id}")
