@@ -5,18 +5,14 @@ from app.database import get_db
 from app.models import Checks
 from app.schemas import ChecksBase
 
-check_router = APIRouter()
+check_router = APIRouter(tags=["Check router"])
 
 """ POST """
 
 
 @check_router.post("/checks/create/")
 def create_check(item: ChecksBase, db: Session = Depends(get_db)):  # noqa: B008
-    new_check = Checks(
-        check_num=item.check_num,
-        date_created=item.date_created,
-        cashier_id=item.cashier_id,
-    )
+    new_check = Checks(**item.model_dump())
     db.add(new_check)
     db.commit()
     db.refresh(new_check)

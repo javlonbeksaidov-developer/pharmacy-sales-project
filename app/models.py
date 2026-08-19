@@ -19,7 +19,7 @@ class Users(Base):
     password = Column(String, nullable=False)
     full_name = Column(String(length=50), nullable=False)
 
-    role = Column(Enum(UserRole), nullable=False)
+    role = Column(Enum(UserRole), default=UserRole.CASHIER, nullable=False)
 
     checks_table = relationship("Checks", back_populates="cashier")
 

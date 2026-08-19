@@ -5,21 +5,14 @@ from app.database import get_db
 from app.models import Drugs
 from app.schemas import DrugsBase
 
-drug_router = APIRouter()
+drug_router = APIRouter(tags=["Drug router"])
 
 """ POST """
 
 
 @drug_router.post("/drugs/create/")
 def create_drug(drug: DrugsBase, db: Session = Depends(get_db)):  # noqa: B008
-    new_drug = Drugs(
-        name=drug.name,
-        amount=drug.amount,
-        desc=drug.desc,
-        base_price=drug.base_price,
-        cell_price=drug.cell_price,
-        bar_code=drug.bar_code,
-    )
+    new_drug = Drugs(**drug.model_dump())
     db.add(new_drug)
     db.commit()
     db.refresh(new_drug)

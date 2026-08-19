@@ -9,7 +9,14 @@ class UsersBase(BaseModel):
     username: str
     password: str
     full_name: str
-    role: UserRole
+    role: UserRole = UserRole.CASHIER
+
+
+class UserUpdate(BaseModel):
+    username: str | None = None
+    password: str | None = None
+    full_name: str | None = None
+    role: UserRole | None = None
 
 
 class DrugsBase(BaseModel):

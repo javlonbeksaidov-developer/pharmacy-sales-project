@@ -5,18 +5,14 @@ from app.database import get_db
 from app.models import CheckItem
 from app.schemas import CheckItemBase
 
-check_item_router = APIRouter()
+check_item_router = APIRouter(tags=["Check Item router"])
 
 """ POST """
 
 
 @check_item_router.post("/check-items/create/")
 def create_check_item(item: CheckItemBase, db: Session = Depends(get_db)):  # noqa: B008
-    new_check_item = CheckItem(
-        amount=item.amount,
-        drug_id=item.drug_id,
-        check_id=item.check_id,
-    )
+    new_check_item = CheckItem(**item.model_dump())
     db.add(new_check_item)
     db.commit()
     db.refresh(new_check_item)
