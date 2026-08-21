@@ -25,7 +25,19 @@ class DrugsBase(BaseModel):
     desc: str
     base_price: float
     cell_price: float
-    bar_code: str
+
+
+class DrugUpdate(BaseModel):
+    name: str | None = None
+    amount: int | None = None
+    desc: str | None = None
+    base_price: float | None = None
+    cell_price: float | None = None
+
+
+class DrugAmountUpdate(BaseModel):
+    id: int
+    amount: int
 
 
 class ChecksBase(BaseModel):
