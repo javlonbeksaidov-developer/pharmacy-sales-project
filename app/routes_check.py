@@ -1,8 +1,8 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app.models import Checks
+from app.models import Checks, Users
 from app.schemas import ChecksBase
 
 check_router = APIRouter(tags=["Check router"])
@@ -11,8 +11,19 @@ check_router = APIRouter(tags=["Check router"])
 
 
 @check_router.post("/checks/create/")
-def create_check(item: ChecksBase, db: Session = Depends(get_db)):  # noqa: B008
+def create_check(admin_id: int, item: ChecksBase, db: Session = Depends(get_db)):  # noqa: B008
+    admin = db.query(Users).filter(Users.id == admin_id).first()
+    if admin is None:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    if admin.role != "ADMIN":
+        raise HTTPException(status_code=401, detail="Return 1 around")
+    
     new_check = Checks(**item.model_dump())
+    cashier = db.query(Users).filter(Users.id == item.cashier_id).first()
+    if cashier is None:
+        raise HTTPException(status_code=404, detail="Cashier not found")
+
     db.add(new_check)
     db.commit()
     db.refresh(new_check)

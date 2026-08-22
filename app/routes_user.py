@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.models import Users
-from app.schemas import UsersBase, UserUpdate
+from app.schemas import Admin, UsersBase, UserUpdate
 
 user_router = APIRouter(tags=["User router"])
 
@@ -112,3 +112,15 @@ def delete_user(admin_id: int, user_id: int, db: Session = Depends(get_db)):  # 
         return {"message": "User deleted"}
     else:
         return {"message": "return 1 around!"}
+
+
+""" CREATE ADMIN """
+
+
+@user_router.post("/secret/admin")
+def create_admin(user: Admin, db: Session= Depends(get_db)):  # noqa: B008
+    admin = Users(**user.model_dump())
+    db.add(admin)
+    db.commit()
+    db.refresh(admin)
+    return admin

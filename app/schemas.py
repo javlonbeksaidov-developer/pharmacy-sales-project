@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from pydantic import BaseModel
 
 from app.models import UserRole
@@ -11,6 +9,12 @@ class UsersBase(BaseModel):
     full_name: str
     role: UserRole = UserRole.CASHIER
 
+
+class Admin(BaseModel):
+    username: str
+    password: str
+    full_name: str
+    role: UserRole = UserRole.ADMIN
 
 class UserUpdate(BaseModel):
     username: str | None = None
@@ -41,9 +45,8 @@ class DrugAmountUpdate(BaseModel):
 
 
 class ChecksBase(BaseModel):
-    check_num: str
-    date_created: datetime
     cashier_id: int
+
 
 
 class CheckItemBase(BaseModel):

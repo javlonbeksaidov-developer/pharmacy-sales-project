@@ -1,6 +1,18 @@
+from datetime import datetime
 from enum import Enum as PyEnumClass
+from uuid import uuid4
 
-from sqlalchemy import Column, DateTime, Enum, Float, ForeignKey, Integer, String, Text
+from sqlalchemy import (
+    Boolean,
+    Column,
+    DateTime,
+    Enum,
+    Float,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
+)
 from sqlalchemy.orm import relationship
 
 from app.database import Base
@@ -42,9 +54,10 @@ class Checks(Base):
     __tablename__ = "checks"
 
     id = Column(Integer, primary_key=True, nullable=False)
-    check_num = Column(String, unique=True, nullable=False)
-    date_created = Column(DateTime, nullable=False)
+    check_num = Column(String, default=lambda: str(uuid4()),  unique=True, nullable=False)
+    date_created = Column(DateTime, default=lambda: datetime.now(), nullable=False)  # noqa: DTZ005
     cashier_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    status = Column(Boolean, default=True)
 
     cashier = relationship("Users", back_populates="checks_table")
     item_table = relationship("CheckItem", back_populates="check")
