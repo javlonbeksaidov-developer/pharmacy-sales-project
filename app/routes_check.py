@@ -14,7 +14,7 @@ check_router = APIRouter(tags=["Check router"])
 def create_check(admin_id: int, item: ChecksBase, db: Session = Depends(get_db)):  # noqa: B008
     admin = db.query(Users).filter(Users.id == admin_id).first()
     if admin is None:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise HTTPException(status_code=404, detail="Admin not found")
 
     if admin.role != "ADMIN":
         raise HTTPException(status_code=401, detail="Return 1 around")
@@ -34,13 +34,21 @@ def create_check(admin_id: int, item: ChecksBase, db: Session = Depends(get_db))
 
 
 @check_router.get("/checks/")
-def get_all_checks(db: Session = Depends(get_db)):  # noqa: B008
+def get_all_checks(user_id:int, db: Session = Depends(get_db)):  # noqa: B008
+    user = db.query(Users).filter(Users.id == user_id).first()
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+
     checks = db.query(Checks).all()
     return checks
 
 
 @check_router.get("/checks/{check_id}")
-def get_check_by_id(check_id: int, db: Session = Depends(get_db)):  # noqa: B008
+def get_check_by_id(user_id:int, check_id: int, db: Session = Depends(get_db)):  # noqa: B008
+    user = db.query(Users).filter(Users.id == user_id).first()
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+
     checks = db.query(Checks).filter(Checks.id == check_id).first()
     return checks
 
@@ -49,7 +57,14 @@ def get_check_by_id(check_id: int, db: Session = Depends(get_db)):  # noqa: B008
 
 
 @check_router.put("/checks/update/{check_id}")
-def update_check(check_id: int, check: ChecksBase, db: Session = Depends(get_db)):  # noqa: B008
+def update_check(admin_id: int, check_id: int, check: ChecksBase, db: Session = Depends(get_db)):  # noqa: B008
+    admin = db.query(Users).filter(Users.id == admin_id).first()
+    if admin is None:
+        raise HTTPException(status_code=404, detail="Admin not found")
+
+    if admin.role != "ADMIN":
+        raise HTTPException(status_code=401, detail="Return 1 around")
+
     db_check = db.query(Checks).filter(Checks.id == check_id).first()
 
     if not db_check:
@@ -68,7 +83,14 @@ def update_check(check_id: int, check: ChecksBase, db: Session = Depends(get_db)
 
 
 @check_router.delete("/checks/delete/{check_id}")
-def delete_check(check_id: int, check: ChecksBase, db: Session = Depends(get_db)):  # noqa: B008
+def delete_check(admin_id: int, check_id: int, db: Session = Depends(get_db)):  # noqa: B008
+    admin = db.query(Users).filter(Users.id == admin_id).first()
+    if admin is None:
+        raise HTTPException(status_code=404, detail="Admin not found")
+
+    if admin.role != "ADMIN":
+        raise HTTPException(status_code=401, detail="Return 1 around")
+
     db_check = db.query(Checks).filter(Checks.id == check_id).first()
 
     if not db_check:
