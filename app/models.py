@@ -54,8 +54,8 @@ class Checks(Base):
     __tablename__ = "checks"
 
     id = Column(Integer, primary_key=True, nullable=False)
-    check_num = Column(String, default=lambda: str(uuid4()),  unique=True, nullable=False)
-    date_created = Column(DateTime, default=lambda: datetime.now(), nullable=False)  # noqa: DTZ005
+    check_num = Column(String, nullable=False)
+    date_created = Column(DateTime, nullable=False)
     cashier_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     status = Column(Boolean, default=True)
 
