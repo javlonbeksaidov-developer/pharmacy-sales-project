@@ -1,6 +1,4 @@
-from datetime import datetime
 from enum import Enum as PyEnumClass
-from uuid import uuid4
 
 from sqlalchemy import (
     Boolean,
@@ -57,7 +55,7 @@ class Checks(Base):
     check_num = Column(String, nullable=False)
     date_created = Column(DateTime, nullable=False)
     cashier_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    status = Column(Boolean, default=True)
+    status = Column(Boolean, nullable=False)
 
     cashier = relationship("Users", back_populates="checks_table")
     item_table = relationship("CheckItem", back_populates="check")

@@ -12,6 +12,10 @@ class UsersBase(BaseModel):
     role: UserRole = UserRole.CASHIER
 
 
+class UserData(UsersBase):
+    id: int
+
+
 class Admin(BaseModel):
     username: str
     password: str
@@ -57,17 +61,29 @@ class CheckItemBase(BaseModel):
     drug: DrugsBase
 
 
-class UserData(UsersBase):
-    id: int
-
-
 class ItemsData(CheckItemBase):
     id: int
+
+
+class DrugOut(DrugsBase):
+    id: int
+
+
+class ItemData(BaseModel):
+    drug_id: int
+    check_id: int
+    amount: int
+
+
+class ItemsOut(BaseModel):
+    id: int
+    amount: int
+    drug: DrugOut
 
 
 class CheckReturn(BaseModel):
     id: int
     check_num: str
-    date: datetime
+    date_created: datetime
     cashier: UserData
-    items: ItemsData
+    items: list[ItemsOut] = []
